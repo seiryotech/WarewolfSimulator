@@ -1,9 +1,7 @@
-export const hello = () => {
-    console.log("hello");
-}
+const Example = () => (
+    <div classNeme="component">
+        <h1>WarewolfSimulator</h1>
+    </div>
+);
 
-const func = () => {
-    console.log("func");
-}
-
-export default func;
+export default Example;

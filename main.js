@@ -1,5 +1,9 @@
-import { hello } from "./module.js";
-import test from "./module.js";
+import Example from "./module.js";
+import "./style.css";
 
-hello();
-test();
+{/* <script type="text/babel"> */ }
+const appEl = document.querySelector("#app");
+const root = ReactDOM.createRoot(appEl);
+root.render(<Example />);
+// </script>
+
