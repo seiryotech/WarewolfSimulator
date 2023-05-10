@@ -1,0 +1,42 @@
+$cWhite: white;
+
+$cBlack: black;
+
+body {
+    background-color: $cBlack;
+}
+
+.box {
+    display: flex;
+    margin-bottom: 10px;
+    max-width: 450px;
+
+
+    & .message {
+        outline: solid 1px $cBlack;
+        padding: 15px;
+        background-color: whitesmoke;
+        border-radius:8px;
+    }
+
+    & .icon_div {
+        margin-right: 10px;
+
+        & .player_name {
+            color: $cWhite;
+            text-align: center;
+            align-items: center;
+        }
+
+        & .icon_src {
+            width:60px;
+            background-color: burlywood;
+            border-radius:50px;
+        }
+    
+    }
+
+}
+
+
+

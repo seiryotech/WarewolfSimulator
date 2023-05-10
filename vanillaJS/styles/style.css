@@ -1,0 +1,37 @@
+body {
+  background-color: black;
+}
+
+.box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 10px;
+  max-width: 450px;
+}
+
+.box .message {
+  outline: solid 1px black;
+  padding: 15px;
+  background-color: whitesmoke;
+  border-radius: 8px;
+}
+
+.box .icon_div {
+  margin-right: 10px;
+}
+
+.box .icon_div .player_name {
+  color: white;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.box .icon_div .icon_src {
+  width: 60px;
+  background-color: burlywood;
+  border-radius: 50px;
+}
+/*# sourceMappingURL=style.css.map */
