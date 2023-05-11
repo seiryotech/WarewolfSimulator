@@ -1,4 +1,4 @@
-import Example from "./module.js";
+import Example from "./message.js";
 import "./style.css";
 
 // {/* <script type="text/babel"> */ }
