@@ -1,6 +1,7 @@
-const Message = () => (
+const Message = ({ speaker, message }) => (
     <div classNeme="component">
-        <h1>WarewolfSimulator</h1>
+        <h1>{speaker}</h1>
+        <div>{message}</div>
     </div>
 );
 
