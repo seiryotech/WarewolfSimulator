@@ -85,10 +85,7 @@ const playerData = {
 };
 
 class Utils {
-    constructor() {
-    }
-
-    shuffleArry([...array]) {
+    static shuffleArry([...array]) {
         for (let i = array.length - 1; i >= 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -96,7 +93,7 @@ class Utils {
         return array;
     }
 
-    shuffleObj(obj) {
+    static shuffleObj(obj) {
         let newObj = {};
         var keys = Object.keys(obj);
         keys.sort(function (a, b) { return Math.random() - 0.5; });
@@ -106,51 +103,51 @@ class Utils {
         return newObj;
     }
 
-    getRand(min, max) {
+    static getRand(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    printMessage(disp_message = 'メッセージが設定されていません', speaker = 'noset') {
-        const div = document.createElement('div');
-        div.className = 'box';
+    static print(disp_message = 'メッセージが設定されていません', speaker = 'noset') {
+        // const div = document.createElement('div');
+        // div.className = 'box';
 
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
-        messageDiv.innerText = disp_message;
+        // const messageDiv = document.createElement('div');
+        // messageDiv.className = 'message';
+        // messageDiv.innerText = disp_message;
 
-        if (speaker !== "noset") {
-            const iconDiv = document.createElement('div');
-            iconDiv.className = 'icon_div';
+        // if (speaker !== "noset") {
+        //     const iconDiv = document.createElement('div');
+        //     iconDiv.className = 'icon_div';
 
-            const img = document.createElement('img');
-            const name = document.createElement('div');
-            name.className = 'player_name'
+        //     const img = document.createElement('img');
+        //     const name = document.createElement('div');
+        //     name.className = 'player_name'
 
-            img.className = 'icon_src';
+        //     img.className = 'icon_src';
 
-            img.src = playerData[speaker.myPlayerCode].src['normal'];
-            img.alt = speaker.myPlayerName; // 代替テキスト
-            img.width = 60; // 横サイズ（px）
-            img.height = 60; // 縦サイズ（px）
+        //     img.src = playerData[speaker.myPlayerCode].src['normal'];
+        //     img.alt = speaker.myPlayerName; // 代替テキスト
+        //     img.width = 60; // 横サイズ（px）
+        //     img.height = 60; // 縦サイズ（px）
 
-            iconDiv.appendChild(img);
-            name.innerHTML = speaker.myPlayerName;
-            iconDiv.appendChild(name);
+        //     iconDiv.appendChild(img);
+        //     name.innerHTML = speaker.myPlayerName;
+        //     iconDiv.appendChild(name);
 
-            div.appendChild(iconDiv);
-        }
+        //     div.appendChild(iconDiv);
+        // }
 
-        div.appendChild(messageDiv);
-        const message = window.document.querySelector('#message');
-        message.appendChild(div);
+        // div.appendChild(messageDiv);
+        // const message = window.document.querySelector('#message');
+        // message.appendChild(div);
 
-        const nextBtn = document.createElement('button');
-        nextBtn.textContent = '次へ'
-        nextBtn.addEventListener('click', () => isWait = false);
+        // const nextBtn = document.createElement('button');
+        // nextBtn.textContent = '次へ'
+        // nextBtn.addEventListener('click', () => isWait = false);
 
-        let isWait = true;
+        // let isWait = true;
 
 
         // async function wait() {
@@ -206,7 +203,7 @@ class Wolf extends Player {
     act() {
         //占い師ターン行動
         if (!gm.preDoneFlg && this.lieJobCode === '') {
-            if (0 == utils.getRand(0, 2)) {
+            if (0 == Utils.getRand(0, 2)) {
                 this.impersonate();
             }
             return true;
@@ -215,10 +212,10 @@ class Wolf extends Player {
         //村人ターン行動
         if (gm.preDoneFlg) {
             if (gm.isCheckCo(this.myPlayerCode) && this.lieJobCode === 'human1') { //既にCOしている
-                utils.print('さっきも言ったけど、' + jobSetting[this.lieJobCode] + 'です。', this);
+                Utils.print('さっきも言ったけど、' + jobSetting[this.lieJobCode] + 'です。', this);
             } else if (!gm.isCheckCo(this.myPlayerCode)) {
                 this.lieJobCode = 'human1';
-                utils.print('CO村人です。', this);
+                Utils.print('CO村人です。', this);
                 super.coResultSet(this, this.lieJobCode);
             }
         }
@@ -234,18 +231,18 @@ class Wolf extends Player {
     //嘘占い
     liePre() {
         //占い対象決定
-        let target = gm.playerInstance[utils.getRand(0, gm.playerInstance.length - 1)];
+        let target = gm.playerInstance[Utils.getRand(0, gm.playerInstance.length - 1)];
         while (target === this) {
-            target = gm.playerInstance[utils.getRand(0, gm.playerInstance.length - 1)];
+            target = gm.playerInstance[Utils.getRand(0, gm.playerInstance.length - 1)];
         }
 
         //偽りの占い
-        if (0 == utils.getRand(0, 2) || !target.myJobCode.startsWith('wolf')) {
-            utils.print(`CO占い師、${target.myPlayerName}は人狼！`, this);
+        if (0 == Utils.getRand(0, 2) || !target.myJobCode.startsWith('wolf')) {
+            Utils.print(`CO占い師、${target.myPlayerName}は人狼！`, this);
             super.predictResultSet(this, this.lieJobCode, target, 'wolf');
             target.reAct('wolf1');
         } else {
-            utils.print(`CO占い師、${target.myPlayerName}は白みたい`, this);
+            Utils.print(`CO占い師、${target.myPlayerName}は白みたい`, this);
             super.predictResultSet(this, this.lieJobCode, target, 'white');
             target.reAct('white');
         }
@@ -254,19 +251,19 @@ class Wolf extends Player {
     //占われた時の反応
     reAct(doubtJob) {
         if (doubtJob.startsWith('wolf')) {
-            utils.print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
+            Utils.print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('さっき言った通り、俺は' + jobSetting[this.lieJobCode] + 'だ！', this);
+                Utils.print('さっき言った通り、俺は' + jobSetting[this.lieJobCode] + 'だ！', this);
             } else {
                 this.impersonate();
             }
         } else {
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
-                utils.print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
+                Utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+                Utils.print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
             } else {
                 this.lieJobCode = 'human1';
-                utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+                Utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
                 super.coResultSet(this, this.lieJobCode);
             }
         }
@@ -282,7 +279,7 @@ class Thief extends Player {
     act() {
         //占い師ターン行動
         if (!gm.preDoneFlg && this.lieJobCode === '') {
-            if (0 == utils.getRand(0, 2)) {
+            if (0 == Utils.getRand(0, 2)) {
                 this.impersonate();
             }
             return true;
@@ -291,10 +288,10 @@ class Thief extends Player {
         //村人ターン行動
         if (gm.preDoneFlg) {
             if (gm.isCheckCo(this.myPlayerCode) && this.lieJobCode === 'human1') { //既にCOしている
-                utils.print('さっきも言ったけど、' + jobSetting[this.lieJobCode] + 'です。', this);
+                Utils.print('さっきも言ったけど、' + jobSetting[this.lieJobCode] + 'です。', this);
             } else if (!gm.isCheckCo(this.myPlayerCode)) {
                 this.lieJobCode = 'human1';
-                utils.print('CO村人です。', this);
+                Utils.print('CO村人です。', this);
                 super.coResultSet(this, this.lieJobCode);
             }
         }
@@ -310,18 +307,18 @@ class Thief extends Player {
     //嘘占い
     liePre() {
         //占い対象決定
-        let target = gm.playerInstance[utils.getRand(0, gm.playerInstance.length - 1)];
+        let target = gm.playerInstance[Utils.getRand(0, gm.playerInstance.length - 1)];
         while (target === this) {
-            target = gm.playerInstance[utils.getRand(0, gm.playerInstance.length - 1)];
+            target = gm.playerInstance[Utils.getRand(0, gm.playerInstance.length - 1)];
         }
 
         //偽りの占い
-        if (0 == utils.getRand(0, 2) || !target.myJobCode.startsWith('wolf')) {
-            utils.print(`CO占い師、${target.myPlayerName}は人狼！`, this);
+        if (0 == Utils.getRand(0, 2) || !target.myJobCode.startsWith('wolf')) {
+            Utils.print(`CO占い師、${target.myPlayerName}は人狼！`, this);
             super.predictResultSet(this, this.lieJobCode, target, 'wolf');
             target.reAct('wolf1');
         } else {
-            utils.print(`CO占い師、${target.myPlayerName}は白みたい`, this);
+            Utils.print(`CO占い師、${target.myPlayerName}は白みたい`, this);
             super.predictResultSet(this, this.lieJobCode, target, 'white');
             target.reAct('white');
         }
@@ -330,19 +327,19 @@ class Thief extends Player {
     //占われた時の反応
     reAct(doubtJob) {
         if (doubtJob.startsWith('wolf')) {
-            utils.print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
+            Utils.print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('さっき言った通り、俺は' + jobSetting[this.lieJobCode] + 'だ！', this);
+                Utils.print('さっき言った通り、俺は' + jobSetting[this.lieJobCode] + 'だ！', this);
             } else {
                 this.impersonate();
             }
         } else {
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
-                utils.print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
+                Utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+                Utils.print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
             } else {
                 this.lieJobCode = 'human1';
-                utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+                Utils.print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
                 super.coResultSet(this, this.lieJobCode);
             }
         }
@@ -359,9 +356,9 @@ class Human extends Player {
         }
 
         if (gm.isCheckCo(this.myPlayerCode)) {
-            utils.print('さっきも言ったけど、村人です。', this);
+            Utils.print('さっきも言ったけど、村人です。', this);
         } else {
-            utils.print('CO村人です。', this);
+            Utils.print('CO村人です。', this);
             super.coResultSet(this, this.myJobCode);
         }
         return true;
@@ -369,19 +366,19 @@ class Human extends Player {
 
     reAct(doubtJobCode) {
         if (doubtJobCode.startsWith('wolf')) {
-            utils.print('ちがう！俺は' + jobSetting[doubtJobCode] + 'じゃねえ！', this);
+            Utils.print('ちがう！俺は' + jobSetting[doubtJobCode] + 'じゃねえ！', this);
 
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('さっき言った通り、俺は' + jobSetting[this.myJobCode] + 'だ！', this);
+                Utils.print('さっき言った通り、俺は' + jobSetting[this.myJobCode] + 'だ！', this);
             } else {
-                utils.print('俺は' + jobSetting[this.myJobCode] + 'だ！', this);
+                Utils.print('俺は' + jobSetting[this.myJobCode] + 'だ！', this);
                 super.coResultSet(this, this.myJobCode);
             }
 
         } else { //White
-            utils.print('そのとおり。俺の役職は' + jobSetting[this.myJobCode] + 'です。', this);
+            Utils.print('そのとおり。俺の役職は' + jobSetting[this.myJobCode] + 'です。', this);
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('さっき自分でCOしたし、信憑性高いね。', this);
+                Utils.print('さっき自分でCOしたし、信憑性高いね。', this);
             } else {
                 super.coResultSet(this, this.myJobCode);
             }
@@ -404,15 +401,15 @@ class Pre extends Player {
         //占い対象決定
         let targetObj;
         while (targetObj === undefined || targetObj === this) {
-            targetObj = gm.playerInstance[utils.getRand(0, gm.playerInstance.length - 1)];
+            targetObj = gm.playerInstance[Utils.getRand(0, gm.playerInstance.length - 1)];
         }
 
         //占い
         if (targetObj.myJobCode.startsWith('wolf')) {
-            utils.print('CO占い師、' + targetObj.myPlayerName + 'は人狼！', this);
+            Utils.print('CO占い師、' + targetObj.myPlayerName + 'は人狼！', this);
             super.predictResultSet(this, 'pre', targetObj, 'wolf');
         } else {
-            utils.print('CO占い師、' + targetObj.myPlayerName + 'は白みたい', this);
+            Utils.print('CO占い師、' + targetObj.myPlayerName + 'は白みたい', this);
             super.predictResultSet(this, 'pre', targetObj, 'white');
         }
         targetObj.reAct(targetObj.myJobCode);
@@ -422,17 +419,17 @@ class Pre extends Player {
     reAct(doubtJob) {
         if (doubtJob.startsWith('wolf')) {
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print(`ちがう！俺は${jobSetting[doubtJob]}じゃねえ！`, this);
-                utils.print('さっき言った通り、俺は' + jobSetting[this.myJobCode] + 'だ！', this);
+                Utils.print(`ちがう！俺は${jobSetting[doubtJob]}じゃねえ！`, this);
+                Utils.print('さっき言った通り、俺は' + jobSetting[this.myJobCode] + 'だ！', this);
             } else {
-                utils.print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
-                utils.print('こいつは偽物の占い師！俺が本物だ！俺の占い結果を発表する！', this);
+                Utils.print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
+                Utils.print('こいつは偽物の占い師！俺が本物だ！俺の占い結果を発表する！', this);
                 this.act();
             }
         } else {
-            utils.print('そのとおり、俺の役職は' + jobSetting[this.myJobCode] + 'です。', this);
+            Utils.print('そのとおり、俺の役職は' + jobSetting[this.myJobCode] + 'です。', this);
             if (gm.isCheckCo(this.myPlayerCode)) {
-                utils.print('さっき自分でCOしたし、信憑性高いね。', this);
+                Utils.print('さっき自分でCOしたし、信憑性高いね。', this);
             }
         }
     }
@@ -448,34 +445,34 @@ class GameMaster {
     //【ゲーム開始時】役職の文字列表示
     printJob() {
         let dispString = ''
-        utils.print('■ゲームがはじまります■');
-        utils.print('■今回の役職■');
+        Utils.print('■ゲームがはじまります■');
+        Utils.print('■今回の役職■');
         for (let key in jobSetting) {
             if (dispString !== '') {
                 dispString += '、';
             }
             dispString += jobSetting[key];
         }
-        utils.print(dispString);
+        Utils.print(dispString);
     }
 
     //参加者の文字列表示
     printPlayer() {
         let dispString = ''
-        utils.print('■参加者の人たちです■');
+        Utils.print('■参加者の人たちです■');
         for (let key in playerSetting) {
             if (dispString !== '') {
                 dispString += '、';
             }
             dispString += playerSetting[key];
         }
-        utils.print(dispString);
+        Utils.print(dispString);
     }
 
     //【ゲーム開始時】インスタンス生成
     createPlayer() {
-        playerSetting = utils.shuffleObj(playerSetting);
-        let jobKeyArry = utils.shuffleArry(Object.keys(jobSetting));
+        playerSetting = Utils.shuffleObj(playerSetting);
+        let jobKeyArry = Utils.shuffleArry(Object.keys(jobSetting));
         let i = 0;
         for (let key in playerSetting) {
             debugMode && console.log(`【役職割り振り】${playerSetting[key]}は、${jobSetting[jobKeyArry[i]]}(${jobKeyArry[i]})`);
@@ -499,12 +496,12 @@ class GameMaster {
                     break;
 
                 default:
-                    utils.print('おや、何かがおかしいようです。')
+                    Utils.print('おや、何かがおかしいようです。')
                     return false;
             }
 
             const introMessageObj = playerData[key]['intro'];
-            utils.print(introMessageObj[utils.getRand(0, Object.keys(introMessageObj).length)], this.playerInstance[i]);
+            Utils.print(introMessageObj[Utils.getRand(0, Object.keys(introMessageObj).length)], this.playerInstance[i]);
             i++
         }
         debugMode && console.log(`【役職割り振り】${this.playerInstance}`);
@@ -513,12 +510,12 @@ class GameMaster {
 
     playerAct() {
         if (gm.preDoneFlg) {
-            utils.print('■では村人は名乗り出てください■');
+            Utils.print('■では村人は名乗り出てください■');
         } else {
-            utils.print('■昼がはじまります。占い師は名乗り出てください■');
+            Utils.print('■昼がはじまります。占い師は名乗り出てください■');
         }
 
-        this.playerInstance = utils.shuffleArry(this.playerInstance);
+        this.playerInstance = Utils.shuffleArry(this.playerInstance);
         for (let i = 0; i <= this.playerInstance.length - 1; i++) {
             debugMode && console.log(`${this.playerInstance[i].myPlayerName}の行動`);
             if (!this.playerInstance[i].act()) {
@@ -529,16 +526,16 @@ class GameMaster {
     }
 
     createKillButton() {
-        utils.print('■いままでのやりとりから、誰が人狼でしょうか？■')
+        Utils.print('■いままでのやりとりから、誰が人狼でしょうか？■')
 
-        this.playerInstance = utils.shuffleArry(this.playerInstance);
+        // this.playerInstance = Utils.shuffleArry(this.playerInstance);
 
-        const button = window.document.querySelector('#button');
-        button.innerHTML = '';
+        // const button = window.document.querySelector('#button');
+        // button.innerHTML = '';
 
-        for (let key in this.playerInstance) {
-            button.innerHTML += '<input type="button" value="' + this.playerInstance[key].myPlayerName + 'を処刑する" onclick=gm.judge("' + key + '")>';
-        }
+        // for (let key in this.playerInstance) {
+        //     button.innerHTML += '<input type="button" value="' + this.playerInstance[key].myPlayerName + 'を処刑する" onclick=gm.judge("' + key + '")>';
+        // }
         return true;
     }
 
@@ -550,33 +547,33 @@ class GameMaster {
 
         switch (target) {
             case target.startsWith('wolf') && target:
-                utils.print('処刑対象は人狼でした。あなたの勝利です。');
+                Utils.print('処刑対象は人狼でした。あなたの勝利です。');
                 break;
 
             case target.startsWith('human') && target:
-                utils.print('処刑対象は村人でした。あなたの敗北です。');
+                Utils.print('処刑対象は村人でした。あなたの敗北です。');
                 break;
 
             case 'pre':
-                utils.print('処刑対象は占い師でした。あなたの敗北です。');
+                Utils.print('処刑対象は占い師でした。あなたの敗北です。');
                 break;
 
             case 'thief':
-                utils.print('処刑対象は怪盗でした。あなたの敗北です。');
+                Utils.print('処刑対象は怪盗でした。あなたの敗北です。');
                 break;
 
             default:
-                utils.print('おや、何かがおかしいようです。');
+                Utils.print('おや、何かがおかしいようです。');
                 break;
         }
         gm.printFinalResult();
     }
 
     printFinalResult() {
-        utils.print('■役職は以下でした■')
+        Utils.print('■役職は以下でした■')
 
         for (let i = 0; i <= this.playerInstance.length - 1; i++) {
-            utils.print(this.playerInstance[i].myPlayerName + ':' + jobSetting[this.playerInstance[i].myJobCode]);
+            Utils.print(this.playerInstance[i].myPlayerName + ':' + jobSetting[this.playerInstance[i].myJobCode]);
         }
 
         //リロードボタン
@@ -595,7 +592,7 @@ class GameMaster {
 };
 
 //ゲーム開始
-const utils = new Utils();
+// const Utils = new Utils();
 const gm = new GameMaster();
 
 //プレイヤー準備
