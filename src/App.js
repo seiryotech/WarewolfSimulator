@@ -1,43 +1,52 @@
-// import { useState } from "react"
+import { useState } from "react"
 import { print, puts } from "./components/print"
 import playerData from "./components/playerData";
+import Setup from "./components/setup";
+import Talk from "./components/talk";
 import "./style/style.css";
 
-// const createMessage = (arry) => {
-//   return arry.map((val) => {
-//     return <span>{val}</span>
-//   })
-// }
-const createMessage = (arry) => {
-  return arry.map((val) => {
-    // setVal(val);
-    return <span>{val}</span>
-  })
-}
-
-
+let startFlg = false;
 const App = () => {
-  // const [val, setVal] = useState("")
-  // print = new print(val, setVal);
+  const gameSelect = [
+    { label: "3人（村人/村人/人狼）", value: "human1:村人,human2:村人,wolf1:人狼" },
+    { label: "4人（村人/村人/人狼/占い師）", value: "human1:村人,human2:村人,wolf1:人狼,pre:占い師" },
+    { label: "5人（村人/村人/人狼/人狼/占い師）", value: "human1:村人,human2:村人,wolf1:人狼,wolf2:人狼,pre:占い師" },
+    { label: "6人（村人/村人/人狼/人狼/占い師/怪盗）", value: "human1:村人,human2:村人,wolf1:人狼,wolf2:人狼,pre:占い師,thief:怪盗" }
+  ];
+
+  const [val, setVal] = useState(gameSelect);
+
+  const start = (selectval) => {
+    startFlg = true;
+    setVal("");
+    jobSetting = selectval.split(",").map((s) => {
+      return { [s.split(":")[0]]: s.split(":")[1] }
+    })
+  }
+
+  if (startFlg) {
+    console.log("ゲーム開始")
+    GameStart();
+  }
+
   return (<><div>title</div>
-    {createMessage(puts)}
-    {/* {val} */}
-    {/* {createMessage(puts())} */}
+    <Setup gameSelect={val} startFlg={startFlg} start={start} val={val} />
+    <Talk words={puts()} startFlg={startFlg}></Talk>
   </>)
 }
 export default App;
 
-const debugMode = true;
+const debugMode = false;
 // let message = []; //画面表示
 let gm; //ゲーム管理
 
 let jobSetting = {
-  'human1': '村人',
-  'human2': '村人',
-  'wolf1': '人狼',
-  'pre': '占い師',
-  'wolf2': '人狼',
-  'thief': '怪盗'
+  // 'human1': '村人',
+  // 'human2': '村人',
+  // 'wolf1': '人狼',
+  // 'pre': '占い師',
+  // 'wolf2': '人狼',
+  // 'thief': '怪盗'
 };
 
 let playerSetting = {
@@ -383,13 +392,19 @@ class GameMaster {
     let dispString = ''
     print('■ゲームがはじまります■');
     print('■今回の役職■');
-    for (let key in jobSetting) {
-      if (dispString !== '') {
-        dispString += '、';
-      }
-      dispString += jobSetting[key];
-    }
-    print(dispString);
+    console.log({ jobSetting })
+    print((jobSetting.map((job) => {
+      return Object.values(job)[0];
+    })).join("、"))
+
+    // for (let key in jobSetting) {
+    //   if (dispString !== '') {
+    //     dispString += '、';
+    //   }
+    //   dispString += jobSetting[key];
+    // }
+    // console.log({ jobSetting })
+    // print(dispString);
   }
 
   //参加者の文字列表示
@@ -563,5 +578,3 @@ const GameStart = () => {
     debugMode && console.log('create_button失敗');
   }
 }
-
-GameStart();
