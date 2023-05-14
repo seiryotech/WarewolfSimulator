@@ -3,17 +3,26 @@ import { print, puts } from "./components/print"
 import playerData from "./components/playerData";
 import "./style/style.css";
 
+// const createMessage = (arry) => {
+//   return arry.map((val) => {
+//     return <span>{val}</span>
+//   })
+// }
 const createMessage = (arry) => {
   return arry.map((val) => {
+    // setVal(val);
     return <span>{val}</span>
   })
 }
+
 
 const App = () => {
   // const [val, setVal] = useState("")
   // print = new print(val, setVal);
   return (<><div>title</div>
-    {createMessage(puts())}
+    {createMessage(puts)}
+    {/* {val} */}
+    {/* {createMessage(puts())} */}
   </>)
 }
 export default App;
