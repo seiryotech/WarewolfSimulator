@@ -55,11 +55,11 @@ const App = () => {
     GameStart();
   }
 
-  const judge = ""
+  // const judge = ""
   return (<><div>一人用人狼</div>
     <Setup gameSelect={val} setupFlg={setupFlg} setup={setup} />
     <Talk words={puts()} setupFlg={setupFlg}></Talk>
-    {createFlg ? <JudgeButton playerInstance={gm.playerInstance} judge={judge}></JudgeButton> : ""}
+    {createFlg ? <JudgeButton playerInstance={gm.playerInstance} judge={gm.judge}></JudgeButton> : null}
   </>)
 }
 export default App;
@@ -204,19 +204,19 @@ class Wolf extends Player {
   //占われた時の反応
   reAct(doubtJob) {
     if (doubtJob.startsWith('wolf')) {
-      print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
+      print('ちがう！私は' + jobSetting[doubtJob] + 'じゃない！', this);
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('さっき言った通り、俺は' + jobSetting[this.lieJobCode] + 'だ！', this);
+        print('さっき言った通り、私は' + jobSetting[this.lieJobCode] + 'です！', this);
       } else {
         this.impersonate();
       }
     } else {
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
         print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
       } else {
         this.lieJobCode = 'human1';
-        print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
         super.coResultSet(this, this.lieJobCode);
       }
     }
@@ -280,19 +280,19 @@ class Thief extends Player {
   //占われた時の反応
   reAct(doubtJob) {
     if (doubtJob.startsWith('wolf')) {
-      print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
+      print('ちがう！私は' + jobSetting[doubtJob] + 'じゃないです！', this);
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('さっき言った通り、俺は' + jobSetting[this.lieJobCode] + 'だ！', this);
+        print('さっき言った通り、私は' + jobSetting[this.lieJobCode] + 'です！', this);
       } else {
         this.impersonate();
       }
     } else {
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
         print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
       } else {
         this.lieJobCode = 'human1';
-        print('そのとおり、俺は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
         super.coResultSet(this, this.lieJobCode);
       }
     }
@@ -319,12 +319,12 @@ class Human extends Player {
 
   reAct(doubtJobCode) {
     if (doubtJobCode.startsWith('wolf')) {
-      print('ちがう！俺は' + jobSetting[doubtJobCode] + 'じゃねえ！', this);
+      print('ちがう！私は' + jobSetting[doubtJobCode] + 'じゃないです！', this);
 
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('さっき言った通り、俺は' + jobSetting[this.myJobCode] + 'だ！', this);
+        print('さっき言った通り、私は' + jobSetting[this.myJobCode] + 'です！', this);
       } else {
-        print('俺は' + jobSetting[this.myJobCode] + 'だ！', this);
+        print('私は' + jobSetting[this.myJobCode] + 'です！', this);
         super.coResultSet(this, this.myJobCode);
       }
 
@@ -372,11 +372,11 @@ class Pre extends Player {
   reAct(doubtJob) {
     if (doubtJob.startsWith('wolf')) {
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print(`ちがう！俺は${jobSetting[doubtJob]}じゃねえ！`, this);
-        print('さっき言った通り、俺は' + jobSetting[this.myJobCode] + 'だ！', this);
+        print(`ちがう！私は${jobSetting[doubtJob]}じゃないです！`, this);
+        print('さっき言った通り、私は' + jobSetting[this.myJobCode] + 'です！', this);
       } else {
-        print('ちがう！俺は' + jobSetting[doubtJob] + 'じゃねえ！', this);
-        print('こいつは偽物の占い師！俺が本物だ！俺の占い結果を発表する！', this);
+        print('ちがう！私は' + jobSetting[doubtJob] + 'じゃないです！', this);
+        print('こいつは偽物の占い師！俺が本物です！俺の占い結果を発表する！', this);
         this.act();
       }
     } else {
@@ -417,14 +417,11 @@ class GameMaster {
 
   //【ゲーム開始時】インスタンス生成
   createPlayer() {
-    console.log(["createPlayer", jobSetting]);
     playerSetting = Utils.shuffleObj(playerSetting);
     let jobKeyArry = Utils.shuffleArry(Object.keys(jobSetting));
-    console.log(["jobKeyArry", jobKeyArry]);
     let i = 0;
     for (let key in playerSetting) {
       debugMode && console.log(`【役職割り振り】${playerSetting[key]}は、${jobSetting[jobKeyArry[i]]}(${jobKeyArry[i]})`);
-      console.log("test; " + jobKeyArry[i]);
       switch (jobKeyArry[i]) {
 
         //村人の場合
@@ -475,8 +472,9 @@ class GameMaster {
   }
 
   judge(targetCode) {
-    const button = window.document.querySelector('#button');
-    button.innerHTML = '';
+    console.log(["judge", this.playerInstance, targetCode]);
+    // const button = window.document.querySelector('#button');
+    // button.innerHTML = '';
 
     const target = this.playerInstance[targetCode].myJobCode;
 

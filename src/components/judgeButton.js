@@ -1,12 +1,13 @@
 const JudgeButton = ({ playerInstance, judge }) => {
 
-    console.log(["test", playerInstance]);
+    console.log(["JudgeButton", playerInstance]);
     // print('■いままでのやりとりから、誰が人狼でしょうか？■')
     // playerInstance = Utils.shuffleArry(playerInstance);
-    playerInstance.map(instance => {
-        return <input type="button" value={instance.myPlayerName + "処刑する"} onClick={(key) => {
-            judge(key);
-        }}></input>
+    return playerInstance.map(instance => {
+        console.log(instance);
+        return <input type="button" key={instance.myPlayerName} value={instance.myPlayerName + "を処刑する"} onClick={(key) => {
+            judge(instance.myPlayerCode);
+        }}></input >
     })
 }
 
