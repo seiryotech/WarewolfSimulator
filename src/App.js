@@ -3,10 +3,26 @@ import { print, puts } from "./components/print"
 import playerData from "./components/playerData";
 import Setup from "./components/setup";
 import Talk from "./components/talk";
+import JudgeButton from "./components/judgeButton";
 import "./style/style.css";
 
+const debugMode = false;
 let setupFlg = false;
 let createFlg = false;
+let gm; //ゲーム管理
+
+let jobSetting = {
+  //選択した職業が{human1:村人,human2:村人,wolf1:人狼}形式で登録される
+};
+
+let playerSetting = {
+  'jk': 'JK',
+  'man': '爺',
+  'ol': 'OL',
+  'girl': '少女',
+  'boy': '少年',
+  'neet': 'ニート'
+};
 
 const App = () => {
 
@@ -36,31 +52,19 @@ const App = () => {
   }
 
   if (setupFlg) {
-    console.log("test2");
     GameStart();
   }
 
-  return (<><div>title</div>
+  const judge = ""
+  return (<><div>一人用人狼</div>
     <Setup gameSelect={val} setupFlg={setupFlg} setup={setup} />
     <Talk words={puts()} setupFlg={setupFlg}></Talk>
+    {createFlg ? <JudgeButton playerInstance={gm.playerInstance} judge={judge}></JudgeButton> : ""}
   </>)
 }
 export default App;
 
-const debugMode = false;
-let gm; //ゲーム管理
 
-let jobSetting = {
-};
-
-let playerSetting = {
-  'jk': 'JK',
-  'man': '爺',
-  'ol': 'OL',
-  'girl': '少女',
-  'boy': '少年',
-  'neet': 'ニート'
-};
 
 class Utils {
   // static print(disp_message = 'メッセージが設定されていません', speaker = 'noset') {
@@ -470,20 +474,6 @@ class GameMaster {
     return true;
   }
 
-  createKillButton() {
-    print('■いままでのやりとりから、誰が人狼でしょうか？■')
-
-    // this.playerInstance = Utils.shuffleArry(this.playerInstance);
-
-    // const button = window.document.querySelector('#button');
-    // button.innerHTML = '';
-
-    // for (let key in this.playerInstance) {
-    //     button.innerHTML += '<input type="button" value="' + this.playerInstance[key].myPlayerName + 'を処刑する" onclick=gm.judge("' + key + '")>';
-    // }
-    return true;
-  }
-
   judge(targetCode) {
     const button = window.document.querySelector('#button');
     button.innerHTML = '';
@@ -568,10 +558,10 @@ const GameStart = () => {
     debugMode && console.log('player_act失敗');
   }
 
-  //処刑用ボタン表示
-  if (gm.createKillButton()) {
-    debugMode && console.log('create_button成功');
-  } else {
-    debugMode && console.log('create_button失敗');
-  }
+  // //処刑用ボタン表示
+  // if (gm.createKillButton()) {
+  //   debugMode && console.log('create_button成功');
+  // } else {
+  //   debugMode && console.log('create_button失敗');
+  // }
 }
