@@ -1,12 +1,9 @@
-const Setup = ({ gameSelect, startFlg, start }) => {
-    if (startFlg === true) { return "" };
-    // const gameStart = (e) => {
-    //     start();
-    // }
+const Setup = ({ gameSelect, setupFlg, setup }) => {
+    if (setupFlg === true) { return "" };
     return (
         <div>
             <div>プレイ人数を選んでください</div>
-            <select id="test">
+            <select id="memberNum">
                 {gameSelect.map((select) => (
                     <option key={select.value} value={select.value}>
                         {select.label}
@@ -15,8 +12,8 @@ const Setup = ({ gameSelect, startFlg, start }) => {
             </select>
             <div>
                 <button onClick={() => {
-                    start(document.querySelector("#test").value)
-                    console.log(document.querySelector("#test").value)
+                    setup(document.querySelector("#memberNum").value)
+                    // console.log(document.querySelector("#memberNum").value)
                 }}>ゲーム開始</button>
             </div>
         </div >

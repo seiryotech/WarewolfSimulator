@@ -5,48 +5,52 @@ import Setup from "./components/setup";
 import Talk from "./components/talk";
 import "./style/style.css";
 
-let startFlg = false;
+let setupFlg = false;
+let createFlg = false;
+
 const App = () => {
-  const gameSelect = [
+
+  const level = [
     { label: "3人（村人/村人/人狼）", value: "human1:村人,human2:村人,wolf1:人狼" },
     { label: "4人（村人/村人/人狼/占い師）", value: "human1:村人,human2:村人,wolf1:人狼,pre:占い師" },
     { label: "5人（村人/村人/人狼/人狼/占い師）", value: "human1:村人,human2:村人,wolf1:人狼,wolf2:人狼,pre:占い師" },
     { label: "6人（村人/村人/人狼/人狼/占い師/怪盗）", value: "human1:村人,human2:村人,wolf1:人狼,wolf2:人狼,pre:占い師,thief:怪盗" }
   ];
 
-  const [val, setVal] = useState(gameSelect);
-
-  const start = (selectval) => {
-    startFlg = true;
+  const [val, setVal] = useState(level);
+  const setup = (selectval) => {
+    setupFlg = true;
     setVal("");
-    jobSetting = selectval.split(",").map((s) => {
-      return { [s.split(":")[0]]: s.split(":")[1] }
+    selectval.split(",").forEach((s) => {
+      jobSetting[s.split(":")[0]] = s.split(":")[1]
     })
+
+    //選択された参加人数にプレイヤー数を合わせる
+    Utils.shuffleObj(playerSetting);
+    for (const key of Object.keys(playerSetting)) {
+      if (Object.keys(jobSetting).length === Object.keys(playerSetting).length) {
+        break;
+      }
+      delete playerSetting[key];
+    }
   }
 
-  if (startFlg) {
-    console.log("ゲーム開始")
+  if (setupFlg) {
+    console.log("test2");
     GameStart();
   }
 
   return (<><div>title</div>
-    <Setup gameSelect={val} startFlg={startFlg} start={start} val={val} />
-    <Talk words={puts()} startFlg={startFlg}></Talk>
+    <Setup gameSelect={val} setupFlg={setupFlg} setup={setup} />
+    <Talk words={puts()} setupFlg={setupFlg}></Talk>
   </>)
 }
 export default App;
 
 const debugMode = false;
-// let message = []; //画面表示
 let gm; //ゲーム管理
 
 let jobSetting = {
-  // 'human1': '村人',
-  // 'human2': '村人',
-  // 'wolf1': '人狼',
-  // 'pre': '占い師',
-  // 'wolf2': '人狼',
-  // 'thief': '怪盗'
 };
 
 let playerSetting = {
@@ -389,22 +393,9 @@ class GameMaster {
 
   //【ゲーム開始時】役職の文字列表示
   printJob() {
-    let dispString = ''
     print('■ゲームがはじまります■');
     print('■今回の役職■');
-    console.log({ jobSetting })
-    print((jobSetting.map((job) => {
-      return Object.values(job)[0];
-    })).join("、"))
-
-    // for (let key in jobSetting) {
-    //   if (dispString !== '') {
-    //     dispString += '、';
-    //   }
-    //   dispString += jobSetting[key];
-    // }
-    // console.log({ jobSetting })
-    // print(dispString);
+    print((Object.values(jobSetting).join("、")));
   }
 
   //参加者の文字列表示
@@ -422,11 +413,14 @@ class GameMaster {
 
   //【ゲーム開始時】インスタンス生成
   createPlayer() {
+    console.log(["createPlayer", jobSetting]);
     playerSetting = Utils.shuffleObj(playerSetting);
     let jobKeyArry = Utils.shuffleArry(Object.keys(jobSetting));
+    console.log(["jobKeyArry", jobKeyArry]);
     let i = 0;
     for (let key in playerSetting) {
       debugMode && console.log(`【役職割り振り】${playerSetting[key]}は、${jobSetting[jobKeyArry[i]]}(${jobKeyArry[i]})`);
+      console.log("test; " + jobKeyArry[i]);
       switch (jobKeyArry[i]) {
 
         //村人の場合
@@ -543,6 +537,9 @@ class GameMaster {
 };
 
 const GameStart = () => {
+  if (createFlg) { return; }
+  createFlg = true;
+
   //ゲーム開始
   gm = new GameMaster();
 
