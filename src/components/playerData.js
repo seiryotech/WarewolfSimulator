@@ -1,7 +1,7 @@
 const playerData = {
     'noset': {
         'src': {
-            'normal': 'src/images/jk.png'
+            'normal': 'images/jk.png'
         },
         'intro': {
             0: 'よろしくね。',
@@ -11,7 +11,7 @@ const playerData = {
     },
     'jk': {
         'src': {
-            'normal': 'src/images/jk.png'
+            'normal': 'images/jk.png'
         },
         'intro': {
             0: 'よろしくね。',
@@ -21,7 +21,7 @@ const playerData = {
     },
     'man': {
         'src': {
-            'normal': 'src/images/man.png'
+            'normal': 'images/man.png'
         },
         'intro': {
             0: '営業課長の田中太郎です。本日はよろしくお願いします。',
@@ -31,7 +31,7 @@ const playerData = {
     },
     'ol': {
         'src': {
-            'normal': 'src/images/ol.png'
+            'normal': 'images/ol.png'
         },
         'intro': {
             0: '人狼、大学生の時によくやったわ',
@@ -41,7 +41,7 @@ const playerData = {
     },
     'girl': {
         'src': {
-            'normal': 'src/images/girl.png'
+            'normal': 'images/girl.png'
         },
         'intro': {
             0: 'よろしくー！',
@@ -51,7 +51,7 @@ const playerData = {
     },
     'boy': {
         'src': {
-            'normal': 'src/images/boy.png'
+            'normal': 'images/boy.png'
         },
         'intro': {
             0: '役職、人狼が一番面白くね？？人狼こい！',
@@ -61,7 +61,7 @@ const playerData = {
     },
     'neet': {
         'src': {
-            'normal': 'src/images/boy.png'
+            'normal': 'images/boy.png'
         },
         'intro': {
             0: '俺の足引っ張ったら許さねーからな',

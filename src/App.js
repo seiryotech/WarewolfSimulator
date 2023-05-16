@@ -471,19 +471,22 @@ class GameMaster {
     return true;
   }
 
-  judge(targetCode) {
-    console.log(["judge", this.playerInstance, targetCode]);
-    // const button = window.document.querySelector('#button');
-    // button.innerHTML = '';
+  judge(targetJobCode) {
+    // console.log(["judge", playerInstance, targetCode]);
+    // console.log(playerInstance);
+    // // const button = window.document.querySelector('#button');
+    // // button.innerHTML = '';
 
-    const target = this.playerInstance[targetCode].myJobCode;
 
-    switch (target) {
-      case target.startsWith('wolf') && target:
+
+    // const target = playerInstance[targetCode].myJobCode;
+
+    switch (targetJobCode) {
+      case targetJobCode.startsWith('wolf') && targetJobCode:
         print('処刑対象は人狼でした。あなたの勝利です。');
         break;
 
-      case target.startsWith('human') && target:
+      case targetJobCode.startsWith('human') && targetJobCode:
         print('処刑対象は村人でした。あなたの敗北です。');
         break;
 
@@ -499,7 +502,7 @@ class GameMaster {
         print('おや、何かがおかしいようです。');
         break;
     }
-    gm.printFinalResult();
+    // gm.printFinalResult();
   }
 
   printFinalResult() {
