@@ -4,9 +4,11 @@ import playerData from "./components/playerData";
 import Setup from "./components/setup";
 import Talk from "./components/talk";
 import JudgeButton from "./components/judgeButton";
+import JudgeResultDisp from "./components/JudgeResultDisp";
 import "./style/style.css";
 
 const debugMode = false;
+
 let setupFlg = false;
 let createFlg = false;
 let gm; //ゲーム管理
@@ -26,6 +28,10 @@ let playerSetting = {
 
 const App = () => {
 
+  //ゲームの進行度
+  let progress = 0;
+
+  //難易度選択（参加人数選択）
   const level = [
     { label: "3人（村人/村人/人狼）", value: "human1:村人,human2:村人,wolf1:人狼" },
     { label: "4人（村人/村人/人狼/占い師）", value: "human1:村人,human2:村人,wolf1:人狼,pre:占い師" },
@@ -41,7 +47,7 @@ const App = () => {
       jobSetting[s.split(":")[0]] = s.split(":")[1]
     })
 
-    //選択された参加人数にプレイヤー数を合わせる
+    //選択された参加人数にプレイヤー数を合わせる(ランダムでDELETE)
     Utils.shuffleObj(playerSetting);
     for (const key of Object.keys(playerSetting)) {
       if (Object.keys(jobSetting).length === Object.keys(playerSetting).length) {
@@ -55,16 +61,47 @@ const App = () => {
     GameStart();
   }
 
-  // const judge = ""
+  const [result, setResult] = useState([]);
+  const judge = targetJobCode => {
+    switch (targetJobCode) {
+      case targetJobCode.startsWith('wolf') && targetJobCode:
+        // result.push();
+        setResult([...result, '処刑対象は人狼でした。あなたの勝利です。']);
+        console.log("処刑対象は人狼でした。あなたの勝利です。");
+        // print('処刑対象は人狼でした。あなたの勝利です。');
+        break;
+
+      case targetJobCode.startsWith('human') && targetJobCode:
+        // print('処刑対象は村人でした。あなたの敗北です。');
+        break;
+
+      case 'pre':
+        // print('処刑対象は占い師でした。あなたの敗北です。');
+        break;
+
+      case 'thief':
+        // print('処刑対象は怪盗でした。あなたの敗北です。');
+        break;
+
+      default:
+        // print('おや、何かがおかしいようです。');
+        break;
+    }
+    // gm.printFinalResult();
+  }
+
   return (<><div>一人用人狼</div>
     <Setup gameSelect={val} setupFlg={setupFlg} setup={setup} />
     <Talk words={puts()} setupFlg={setupFlg}></Talk>
-    {createFlg ? <JudgeButton playerInstance={gm.playerInstance} judge={gm.judge}></JudgeButton> : null}
+    {createFlg ? <JudgeButton playerInstance={gm.playerInstance} judge={judge}></JudgeButton> : null}
+    <JudgeResultDisp result={result}></JudgeResultDisp>
   </>)
 }
 export default App;
 
 
+
+///人狼ロジック///
 
 class Utils {
   // static print(disp_message = 'メッセージが設定されていません', speaker = 'noset') {
@@ -165,7 +202,7 @@ class Wolf extends Player {
     //村人ターン行動
     if (gm.preDoneFlg) {
       if (gm.isCheckCo(this.myPlayerCode) && this.lieJobCode === 'human1') { //既にCOしている
-        print('さっきも言ったけど、' + jobSetting[this.lieJobCode] + 'です。', this);
+        print(`さっきも言ったけど、${jobSetting[this.lieJobCode]}です。`, this);
       } else if (!gm.isCheckCo(this.myPlayerCode)) {
         this.lieJobCode = 'human1';
         print('CO村人です。', this);
@@ -204,7 +241,7 @@ class Wolf extends Player {
   //占われた時の反応
   reAct(doubtJob) {
     if (doubtJob.startsWith('wolf')) {
-      print('ちがう！私は' + jobSetting[doubtJob] + 'じゃない！', this);
+      print(`ちがう！私は${jobSetting[doubtJob]}じゃない！`, this);
       if (gm.isCheckCo(this.myPlayerCode)) {
         print('さっき言った通り、私は' + jobSetting[this.lieJobCode] + 'です！', this);
       } else {
@@ -212,11 +249,11 @@ class Wolf extends Player {
       }
     } else {
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print(`そのとおり、私は${jobSetting[this.lieJobCode]}です。`, this);
         print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
       } else {
         this.lieJobCode = 'human1';
-        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print(`そのとおり、私は${jobSetting[this.lieJobCode]}です。`, this);
         super.coResultSet(this, this.lieJobCode);
       }
     }
@@ -241,7 +278,7 @@ class Thief extends Player {
     //村人ターン行動
     if (gm.preDoneFlg) {
       if (gm.isCheckCo(this.myPlayerCode) && this.lieJobCode === 'human1') { //既にCOしている
-        print('さっきも言ったけど、' + jobSetting[this.lieJobCode] + 'です。', this);
+        print(`さっきも言ったけど、${jobSetting[this.lieJobCode]}です。`, this);
       } else if (!gm.isCheckCo(this.myPlayerCode)) {
         this.lieJobCode = 'human1';
         print('CO村人です。', this);
@@ -280,7 +317,7 @@ class Thief extends Player {
   //占われた時の反応
   reAct(doubtJob) {
     if (doubtJob.startsWith('wolf')) {
-      print('ちがう！私は' + jobSetting[doubtJob] + 'じゃないです！', this);
+      print(`ちがう！私は${jobSetting[doubtJob]}じゃないです！`, this);
       if (gm.isCheckCo(this.myPlayerCode)) {
         print('さっき言った通り、私は' + jobSetting[this.lieJobCode] + 'です！', this);
       } else {
@@ -288,11 +325,11 @@ class Thief extends Player {
       }
     } else {
       if (gm.isCheckCo(this.myPlayerCode)) {
-        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print(`そのとおり、私は${jobSetting[this.lieJobCode]}です。`, this);
         print('さっき自分でCOしたし、信憑性高いね。', this.myPlayerName);
       } else {
         this.lieJobCode = 'human1';
-        print('そのとおり、私は' + jobSetting[this.lieJobCode] + 'です。', this);
+        print(`そのとおり、私は${jobSetting[this.lieJobCode]}です。`, this);
         super.coResultSet(this, this.lieJobCode);
       }
     }
@@ -359,10 +396,10 @@ class Pre extends Player {
 
     //占い
     if (targetObj.myJobCode.startsWith('wolf')) {
-      print('CO占い師、' + targetObj.myPlayerName + 'は人狼！', this);
+      print(`CO占い師、${targetObj.myPlayerName}は人狼！`, this);
       super.predictResultSet(this, 'pre', targetObj, 'wolf');
     } else {
-      print('CO占い師、' + targetObj.myPlayerName + 'は白みたい', this);
+      print(`CO占い師、${targetObj.myPlayerName}は白みたい`, this);
       super.predictResultSet(this, 'pre', targetObj, 'white');
     }
     targetObj.reAct(targetObj.myJobCode);
@@ -375,7 +412,7 @@ class Pre extends Player {
         print(`ちがう！私は${jobSetting[doubtJob]}じゃないです！`, this);
         print('さっき言った通り、私は' + jobSetting[this.myJobCode] + 'です！', this);
       } else {
-        print('ちがう！私は' + jobSetting[doubtJob] + 'じゃないです！', this);
+        print(`ちがう！私は${jobSetting[doubtJob]}じゃないです！`, this);
         print('こいつは偽物の占い師！俺が本物です！俺の占い結果を発表する！', this);
         this.act();
       }
@@ -471,39 +508,7 @@ class GameMaster {
     return true;
   }
 
-  judge(targetJobCode) {
-    // console.log(["judge", playerInstance, targetCode]);
-    // console.log(playerInstance);
-    // // const button = window.document.querySelector('#button');
-    // // button.innerHTML = '';
 
-
-
-    // const target = playerInstance[targetCode].myJobCode;
-
-    switch (targetJobCode) {
-      case targetJobCode.startsWith('wolf') && targetJobCode:
-        print('処刑対象は人狼でした。あなたの勝利です。');
-        break;
-
-      case targetJobCode.startsWith('human') && targetJobCode:
-        print('処刑対象は村人でした。あなたの敗北です。');
-        break;
-
-      case 'pre':
-        print('処刑対象は占い師でした。あなたの敗北です。');
-        break;
-
-      case 'thief':
-        print('処刑対象は怪盗でした。あなたの敗北です。');
-        break;
-
-      default:
-        print('おや、何かがおかしいようです。');
-        break;
-    }
-    // gm.printFinalResult();
-  }
 
   printFinalResult() {
     print('■役職は以下でした■')
