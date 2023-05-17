@@ -1,7 +1,8 @@
 const Setup = ({ gameSelect, progress, levelSelect }) => {
     if (progress > 0) { return "" };
     return (
-        <div>
+
+        <>
             <div>プレイ人数を選んでください</div>
             <select id="memberNum">
                 {gameSelect.map((select) => (
@@ -10,13 +11,12 @@ const Setup = ({ gameSelect, progress, levelSelect }) => {
                     </option>
                 ))}
             </select>
-            <div>
+            <div className="start_button">
                 <button onClick={() => {
                     levelSelect(document.querySelector("#memberNum").value)
                 }}>ゲーム開始</button>
             </div>
-        </div >
-
+        </>
     );
 }
 export default Setup;

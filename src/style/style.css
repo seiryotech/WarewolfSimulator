@@ -2,6 +2,24 @@ body {
   background-color: black;
 }
 
+.title {
+  font: bold;
+  color: red;
+  font-size: large;
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.setup_container {
+  width: 100vw;
+  text-align: center;
+}
+
+.start_button {
+  margin-top: 20px;
+}
+
+
 .box {
   display: -webkit-box;
   display: -ms-flexbox;

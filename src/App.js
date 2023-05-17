@@ -76,8 +76,11 @@ const App = () => {
   }
 
   //4:全役職公開（ゲーム終了）
-  return (<><div>一人用人狼</div>
-    <Setup gameSelect={val} progress={progress} levelSelect={levelSelect} />
+  return (<>
+    <div className="setup_container">
+      <div className="title">一人用人狼</div>
+      <Setup gameSelect={val} progress={progress} levelSelect={levelSelect} />
+    </div>
     <Talk words={puts()} progress={progress}></Talk>
     {progress === 2 ? <JudgeButton playerInstance={gm.playerInstance} progress={progress} judge={judge}></JudgeButton> : null}
     <JudgeResultDisp result={result}></JudgeResultDisp>

@@ -6,17 +6,20 @@ body {
     background-color: $cBlack;
 }
 
+.title {
+    font: bold;
+}
+
 .box {
     display: flex;
     margin-bottom: 10px;
     max-width: 450px;
 
-
     & .message {
         outline: solid 1px $cBlack;
         padding: 15px;
         background-color: whitesmoke;
-        border-radius:8px;
+        border-radius: 8px;
     }
 
     & .icon_div {
@@ -29,14 +32,11 @@ body {
         }
 
         & .icon_src {
-            width:60px;
+            width: 60px;
             background-color: burlywood;
-            border-radius:50px;
+            border-radius: 50px;
         }
-    
+
     }
 
 }
-
-
-
