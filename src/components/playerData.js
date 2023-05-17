@@ -1,7 +1,7 @@
 const playerData = {
     'noset': {
         'src': {
-            'normal': 'images/jk.png'
+            'normal': 'images/memo.png'
         },
         'intro': {
             0: 'よろしくね。',

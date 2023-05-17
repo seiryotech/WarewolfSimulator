@@ -1,5 +1,5 @@
-const Setup = ({ gameSelect, setupFlg, setup }) => {
-    if (setupFlg === true) { return "" };
+const Setup = ({ gameSelect, progress, levelSelect }) => {
+    if (progress > 0) { return "" };
     return (
         <div>
             <div>プレイ人数を選んでください</div>
@@ -12,8 +12,7 @@ const Setup = ({ gameSelect, setupFlg, setup }) => {
             </select>
             <div>
                 <button onClick={() => {
-                    setup(document.querySelector("#memberNum").value)
-                    // console.log(document.querySelector("#memberNum").value)
+                    levelSelect(document.querySelector("#memberNum").value)
                 }}>ゲーム開始</button>
             </div>
         </div >

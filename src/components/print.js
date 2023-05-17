@@ -5,7 +5,7 @@ export const print = (message = "メッセージが存在しません", speaker 
         <div className="box">
             <div className="icon_div">
                 <img className="icon_src"
-                    src={playerData[speaker.myPlayerCode] ? playerData[speaker.myPlayerCode].src['normal'] : ""}
+                    src={playerData[playerData[speaker.myPlayerCode] ? speaker.myPlayerCode : speaker].src['normal']}
                     alt={speaker.myPlayerName}
                     width={60}
                     height={60}>
@@ -26,5 +26,3 @@ export const print = (message = "メッセージが存在しません", speaker 
 export const puts = () => {
     return result;
 }
-
-// export print;

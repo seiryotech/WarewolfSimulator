@@ -5,18 +5,18 @@ import Setup from "./components/setup";
 import Talk from "./components/talk";
 import JudgeButton from "./components/judgeButton";
 import JudgeResultDisp from "./components/JudgeResultDisp";
+import AllJobDisp from "./components/AllJobDisp";
 import "./style/style.css";
 
 const debugMode = false;
 
-let setupFlg = false;
-let createFlg = false;
-let gm; //ゲーム管理
+//ゲームの進行度。0:初期状態、1:レベル選択後、2:会話後、3:処刑結果表示後、4:全役職公開
+let progress = 0;
 
-let jobSetting = {
-  //選択した職業が{human1:村人,human2:村人,wolf1:人狼}形式で登録される
-};
+//使用役職。選択したレベルの職業が{human1:村人,human2:村人,wolf1:人狼}形式で登録される
+let jobSetting = {};
 
+//参加プレイヤー一覧
 let playerSetting = {
   'jk': 'JK',
   'man': '爺',
@@ -26,12 +26,10 @@ let playerSetting = {
   'neet': 'ニート'
 };
 
+let gm; //ゲーム管理インスタンス
 const App = () => {
 
-  //ゲームの進行度
-  let progress = 0;
-
-  //難易度選択（参加人数選択）
+  //難易度の選択肢（参加人数選択）
   const level = [
     { label: "3人（村人/村人/人狼）", value: "human1:村人,human2:村人,wolf1:人狼" },
     { label: "4人（村人/村人/人狼/占い師）", value: "human1:村人,human2:村人,wolf1:人狼,pre:占い師" },
@@ -40,8 +38,10 @@ const App = () => {
   ];
 
   const [val, setVal] = useState(level);
-  const setup = (selectval) => {
-    setupFlg = true;
+
+  //0:難易度選択
+  const levelSelect = (selectval) => {
+    if (progress === 0) { progress = 1; }
     setVal("");
     selectval.split(",").forEach((s) => {
       jobSetting[s.split(":")[0]] = s.split(":")[1]
@@ -57,52 +57,36 @@ const App = () => {
     }
   }
 
-  if (setupFlg) {
-    GameStart();
-  }
+  //1:ゲーム実行（各プレイヤーの思考ルーチン実行）
+  if (progress === 1) { GameStart(); }
 
+  //2:処刑ボタン表示
+
+  //3:処刑結果表示
   const [result, setResult] = useState([]);
   const judge = targetJobCode => {
+    progress = 3;
     switch (targetJobCode) {
-      case targetJobCode.startsWith('wolf') && targetJobCode:
-        // result.push();
-        setResult([...result, '処刑対象は人狼でした。あなたの勝利です。']);
-        console.log("処刑対象は人狼でした。あなたの勝利です。");
-        // print('処刑対象は人狼でした。あなたの勝利です。');
-        break;
-
-      case targetJobCode.startsWith('human') && targetJobCode:
-        // print('処刑対象は村人でした。あなたの敗北です。');
-        break;
-
-      case 'pre':
-        // print('処刑対象は占い師でした。あなたの敗北です。');
-        break;
-
-      case 'thief':
-        // print('処刑対象は怪盗でした。あなたの敗北です。');
-        break;
-
-      default:
-        // print('おや、何かがおかしいようです。');
-        break;
+      case targetJobCode.startsWith('wolf') && targetJobCode: setResult('処刑対象は人狼でした。あなたの勝利です。'); break;
+      case targetJobCode.startsWith('human') && targetJobCode: setResult('処刑対象は村人でした。あなたの敗北です。'); break;
+      case 'pre': setResult('処刑対象は占い師でした。あなたの敗北です。'); break;
+      case 'thief': setResult('処刑対象は怪盗でした。あなたの敗北です。'); break;
+      default: setResult('おや、何かがおかしいようです。'); break;
     }
-    // gm.printFinalResult();
   }
 
+  //4:全役職公開（ゲーム終了）
   return (<><div>一人用人狼</div>
-    <Setup gameSelect={val} setupFlg={setupFlg} setup={setup} />
-    <Talk words={puts()} setupFlg={setupFlg}></Talk>
-    {createFlg ? <JudgeButton playerInstance={gm.playerInstance} judge={judge}></JudgeButton> : null}
+    <Setup gameSelect={val} progress={progress} levelSelect={levelSelect} />
+    <Talk words={puts()} progress={progress}></Talk>
+    {progress === 2 ? <JudgeButton playerInstance={gm.playerInstance} progress={progress} judge={judge}></JudgeButton> : null}
     <JudgeResultDisp result={result}></JudgeResultDisp>
+    {progress === 3 ? <AllJobDisp playerInstance={gm.playerInstance} jobSetting={jobSetting}></AllJobDisp> : null}
   </>)
 }
 export default App;
 
-
-
 ///人狼ロジック///
-
 class Utils {
   // static print(disp_message = 'メッセージが設定されていません', speaker = 'noset') {
   //   setVal(message.push(<>
@@ -377,9 +361,6 @@ class Human extends Player {
 };
 
 class Pre extends Player {
-  // constructor(myPlayerCode, myPlayerName, myJobCode) {
-  //   super(myPlayerCode, myPlayerName, myJobCode)
-  // }
   act() {
     if (gm.preDoneFlg) {
       return true;
@@ -508,22 +489,6 @@ class GameMaster {
     return true;
   }
 
-
-
-  printFinalResult() {
-    print('■役職は以下でした■')
-
-    for (let i = 0; i <= this.playerInstance.length - 1; i++) {
-      print(this.playerInstance[i].myPlayerName + ':' + jobSetting[this.playerInstance[i].myJobCode]);
-    }
-
-    //リロードボタン
-    const button = window.document.querySelector('#button');
-    button.innerHTML += '<input type="button" value="もう一度" onclick="location.reload()">';
-
-    return true;
-  }
-
   isCheckCo(me) {
     if (this.publicInfo.hasOwnProperty(me)) {
       return true;
@@ -533,8 +498,8 @@ class GameMaster {
 };
 
 const GameStart = () => {
-  if (createFlg) { return; }
-  createFlg = true;
+  if (progress > 1) { return; }
+  progress = 2;
 
   //ゲーム開始
   gm = new GameMaster();
@@ -563,11 +528,4 @@ const GameStart = () => {
   } else {
     debugMode && console.log('player_act失敗');
   }
-
-  // //処刑用ボタン表示
-  // if (gm.createKillButton()) {
-  //   debugMode && console.log('create_button成功');
-  // } else {
-  //   debugMode && console.log('create_button失敗');
-  // }
 }
