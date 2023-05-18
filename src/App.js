@@ -409,6 +409,7 @@ class Pre extends Player {
   }
 };
 
+//ゲーム管理クラス
 class GameMaster {
   constructor() {
     this.preDoneFlg = false //占い師ターンを終了したか

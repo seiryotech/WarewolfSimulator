@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  background-image: url('../../public/images/background.jpg');
 }
 
 .title {
@@ -13,6 +14,20 @@ body {
 .setup_container {
   width: 100vw;
   text-align: center;
+}
+
+.judge_button {
+  width: 200px;
+  margin: 10px;
+}
+
+#member_num {
+  height: 40px;
+  width: 280px;
+}
+
+.explain_sentence {
+  margin-bottom: 10px;
 }
 
 .start_button {
