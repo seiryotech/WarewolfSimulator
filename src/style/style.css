@@ -16,6 +16,10 @@ body {
   text-align: center;
 }
 
+.name {
+  text-align: center;
+}
+
 .judge_button {
   width: 200px;
   margin: 10px;
